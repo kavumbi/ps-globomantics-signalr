@@ -1,13 +1,11 @@
 ﻿const initializeSignalRConnection = () => {
     const connection = new signalR.HubConnectionBuilder()
-        .withUrl("/auctionhub")
+        .withUrl("/auctionhub", {
+            transport: signalR.HttpTransportType.WebSockets,
+            skipNegotiation: true
+        })
         .configureLogging(signalR.LogLevel.Information)
         .build();
-
-    //connection.on("UpdateAuction", (auction) => {
-    //    const auctionElement = document.getElementById(auction.id);
-    //    auctionElement.innerHTML = auction.currentBid;
-    //});
 
     connection.on("ReceiveNewBid", ({ auctionId, newBid }) => {
         const tr = document.getElementById(auctionId + "-tr");
@@ -45,4 +43,3 @@ const submitBid = (auctionId) => {
     })
         .catch(err => console.error(err.toString()));
 }
-
